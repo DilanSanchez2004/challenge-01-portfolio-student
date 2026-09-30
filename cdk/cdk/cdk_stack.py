@@ -20,11 +20,20 @@ class CdkStack(Stack):
             removal_policy=RemovalPolicy.DESTROY,
             auto_delete_objects=True,
         )
-        
+
         cloudfront.Distribution(
             self,
             "myDist",
             default_behavior=cloudfront.BehaviorOptions(
             origin=origins.S3BucketOrigin.with_origin_access_control(bucket)
             )   
-        )   
+        )
+        table = dynamodb.TableV2(
+            self,
+            "PortFolioTable",
+            partition_key=dynamodb.Attribute(
+            name="pk",
+            type=dynamodb.AttributeType.STRING
+            ),
+            removal_policy=RemovalPolicy.DESTROY
+        )
