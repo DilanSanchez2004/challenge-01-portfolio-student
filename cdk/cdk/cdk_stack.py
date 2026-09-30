@@ -14,9 +14,17 @@ class CdkStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         bucket = s3.Bucket(
-        self,
-        "PortfolioBucket",
-        block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
-        removal_policy=RemovalPolicy.DESTROY,
-        auto_delete_objects=True,
-    )      
+            self,
+            "PortfolioBucket",
+            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            removal_policy=RemovalPolicy.DESTROY,
+            auto_delete_objects=True,
+        )
+        
+        cloudfront.Distribution(
+            self,
+            "myDist",
+            default_behavior=cloudfront.BehaviorOptions(
+            origin=origins.S3BucketOrigin.with_origin_access_control(bucket)
+            )   
+        )   
